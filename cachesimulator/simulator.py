@@ -5,7 +5,7 @@ import shutil
 
 from cachesimulator.bin_addr import BinaryAddress
 from cachesimulator.cache import Cache
-from cachesimulator.reference import Reference
+from cachesimulator.reference import Reference, ReferenceCacheStatus
 from cachesimulator.table import Table
 
 # The names of all reference table columns
@@ -61,6 +61,19 @@ class Simulator(object):
                 ref.cache_status))
 
         print(table)
+
+    def display_hit_miss(self, refs):
+        hits = 0
+        misses = 0
+        for ref in refs:
+            if ref.cache_status == ReferenceCacheStatus.hit:
+                hits += 1
+            else:
+                misses += 1
+        hitrate = hits*100 / (hits + misses)
+        print('Hits: ' + str(hits))
+        print('Misses: ' + str(misses))
+        print('Hit rate: ' + str(hitrate) + '%')
 
     # Displays the contents of the given cache as nicely-formatted table
     def display_cache(self, cache, table_width):
@@ -123,4 +136,6 @@ class Simulator(object):
         self.display_addr_refs(refs, table_width)
         print()
         self.display_cache(cache, table_width)
+        print()
+        self.display_hit_miss(refs)
         print()
