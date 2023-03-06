@@ -60,7 +60,6 @@ def main():
     sim = Simulator()
     if os.path.exists(R'../address_list.pickle'):
         cli_args.word_addrs = pickle.load(open(R'../address_list.pickle', 'rb'))
-        cli_args.word_addrs = cli_args.word_addrs[0:1000000]
     sim.run_simulation(**vars(cli_args))
 
 

@@ -6,7 +6,9 @@ from cachesimulator.bin_addr import BinaryAddress
 from cachesimulator.cache import Cache
 from cachesimulator.reference import Reference, ReferenceCacheStatus
 from cachesimulator.table import Table
-from multiprocessing import Pool
+from multiprocessing.dummy import Pool
+from parallelbar import progress_map
+from tqdm import tqdm
 
 # The names of all reference table columns
 REF_COL_NAMES = ('WordAddr', 'BinAddr', 'Tag', 'Index', 'Offset', 'Hit/Miss')
@@ -21,18 +23,13 @@ class Simulator(object):
     # Retrieves a list of address references for use by simulator
     def get_addr_refs(self, word_addrs, num_addr_bits,
                       num_offset_bits, num_index_bits, num_tag_bits):
-
-        # return [Reference(
-        #         word_addr, num_addr_bits, num_offset_bits,
-        #         num_index_bits, num_tag_bits) for word_addr in word_addrs]
-
         with Pool() as p:
             references = p.starmap(
                 Reference,
                 [(word_addr, num_addr_bits, num_offset_bits, num_index_bits, num_tag_bits) for word_addr in word_addrs])
         return references
 
-    # Displays details for each address reference, including its hit/miss
+            # Displays details for each address reference, including its hit/miss
     # status
     def display_addr_refs(self, refs, table_width):
 
@@ -66,7 +63,7 @@ class Simulator(object):
                 BinaryAddress.prettify(ref_offset, MIN_BITS_PER_GROUP),
                 ref.cache_status))
 
-        with open('../cache.txt', 'w') as f:
+        with open('cache.txt', 'w') as f:
             f.write(str(table))
             f.write('\n')
         # print(table)
@@ -80,7 +77,7 @@ class Simulator(object):
             else:
                 misses += 1
         hitrate = hits*100 / (hits + misses)
-        with open('../cache.txt', 'a') as f:
+        with open('cache.txt', 'a') as f:
             f.write('Hits: ' + str(hits) + '\n')
             f.write('Misses: ' + str(misses) + '\n')
             f.write('Hit rate: ' + str(hitrate) + '\n')
@@ -111,7 +108,7 @@ class Simulator(object):
             table.rows[0].append(' '.join(
                 ','.join(map(str, entry['data'])) for entry in blocks))
 
-        with open('../cache.txt', 'a') as f:
+        with open('cache.txt', 'a') as f:
             f.write(str(table))
             f.write('\n')
         # print(table)
