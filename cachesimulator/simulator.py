@@ -2,7 +2,6 @@
 
 import math
 import shutil
-from line_profiler_pycharm import profile
 from cachesimulator.bin_addr import BinaryAddress
 from cachesimulator.cache import Cache
 from cachesimulator.reference import Reference, ReferenceCacheStatus

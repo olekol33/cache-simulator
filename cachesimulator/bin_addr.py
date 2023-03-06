@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from line_profiler_pycharm import profile
 
 class BinaryAddress(str):
 

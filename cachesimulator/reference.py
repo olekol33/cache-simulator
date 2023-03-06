@@ -2,7 +2,6 @@
 
 from collections import OrderedDict
 from enum import Enum
-from line_profiler_pycharm import profile
 from cachesimulator.bin_addr import BinaryAddress
 from cachesimulator.word_addr import WordAddress
 
