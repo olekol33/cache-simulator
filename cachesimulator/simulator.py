@@ -6,7 +6,7 @@ from cachesimulator.bin_addr import BinaryAddress
 from cachesimulator.cache import Cache
 from cachesimulator.reference import Reference, ReferenceCacheStatus
 from cachesimulator.table import Table
-from multiprocessing.dummy import Pool
+from multiprocessing import Pool
 from parallelbar import progress_map
 from tqdm import tqdm
 
