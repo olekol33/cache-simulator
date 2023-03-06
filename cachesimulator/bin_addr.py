@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+from line_profiler_pycharm import profile
 
 class BinaryAddress(str):
 
@@ -55,8 +55,12 @@ class BinaryAddress(str):
     def get_offset(self, num_offset_bits):
 
         start = len(self) - num_offset_bits
-        offset = self[start:]
-        if len(offset) != 0:
-            return offset
+        if start > 0:
+            return self[start:]
         else:
             return None
+        # offset = self[start:]
+        # if len(offset) != 0:
+        #     return offset
+        # else:
+        #     return None

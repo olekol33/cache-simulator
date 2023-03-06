@@ -2,14 +2,13 @@
 
 from collections import OrderedDict
 from enum import Enum
-
+from line_profiler_pycharm import profile
 from cachesimulator.bin_addr import BinaryAddress
 from cachesimulator.word_addr import WordAddress
 
 
 # An address reference consisting of the address and all of its components
 class Reference(object):
-
     def __init__(self, word_addr, num_addr_bits,
                  num_offset_bits, num_index_bits, num_tag_bits):
         self.word_addr = WordAddress(word_addr)

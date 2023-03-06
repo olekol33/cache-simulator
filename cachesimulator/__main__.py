@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
+import pickle
 
 from cachesimulator.simulator import Simulator
 
@@ -56,6 +58,9 @@ def main():
 
     cli_args = parse_cli_args()
     sim = Simulator()
+    if os.path.exists(R'../address_list.pickle'):
+        cli_args.word_addrs = pickle.load(open(R'../address_list.pickle', 'rb'))
+        cli_args.word_addrs = cli_args.word_addrs[0:1000000]
     sim.run_simulation(**vars(cli_args))
 
 

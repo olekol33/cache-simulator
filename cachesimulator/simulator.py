@@ -2,11 +2,12 @@
 
 import math
 import shutil
-
+from line_profiler_pycharm import profile
 from cachesimulator.bin_addr import BinaryAddress
 from cachesimulator.cache import Cache
 from cachesimulator.reference import Reference, ReferenceCacheStatus
 from cachesimulator.table import Table
+from multiprocessing import Pool
 
 # The names of all reference table columns
 REF_COL_NAMES = ('WordAddr', 'BinAddr', 'Tag', 'Index', 'Offset', 'Hit/Miss')
@@ -22,9 +23,15 @@ class Simulator(object):
     def get_addr_refs(self, word_addrs, num_addr_bits,
                       num_offset_bits, num_index_bits, num_tag_bits):
 
-        return [Reference(
-                word_addr, num_addr_bits, num_offset_bits,
-                num_index_bits, num_tag_bits) for word_addr in word_addrs]
+        # return [Reference(
+        #         word_addr, num_addr_bits, num_offset_bits,
+        #         num_index_bits, num_tag_bits) for word_addr in word_addrs]
+
+        with Pool() as p:
+            references = p.starmap(
+                Reference,
+                [(word_addr, num_addr_bits, num_offset_bits, num_index_bits, num_tag_bits) for word_addr in word_addrs])
+        return references
 
     # Displays details for each address reference, including its hit/miss
     # status
@@ -60,7 +67,10 @@ class Simulator(object):
                 BinaryAddress.prettify(ref_offset, MIN_BITS_PER_GROUP),
                 ref.cache_status))
 
-        print(table)
+        with open('../cache.txt', 'w') as f:
+            f.write(str(table))
+            f.write('\n')
+        # print(table)
 
     def display_hit_miss(self, refs):
         hits = 0
@@ -71,9 +81,14 @@ class Simulator(object):
             else:
                 misses += 1
         hitrate = hits*100 / (hits + misses)
-        print('Hits: ' + str(hits))
-        print('Misses: ' + str(misses))
-        print('Hit rate: ' + str(hitrate) + '%')
+        with open('../cache.txt', 'a') as f:
+            f.write('Hits: ' + str(hits) + '\n')
+            f.write('Misses: ' + str(misses) + '\n')
+            f.write('Hit rate: ' + str(hitrate) + '\n')
+        #     f.write('\n')
+        # print('Hits: ' + str(hits))
+        # print('Misses: ' + str(misses))
+        # print('Hit rate: ' + str(hitrate) + '%')
 
     # Displays the contents of the given cache as nicely-formatted table
     def display_cache(self, cache, table_width):
@@ -97,7 +112,10 @@ class Simulator(object):
             table.rows[0].append(' '.join(
                 ','.join(map(str, entry['data'])) for entry in blocks))
 
-        print(table)
+        with open('../cache.txt', 'a') as f:
+            f.write(str(table))
+            f.write('\n')
+        # print(table)
 
     # Run the entire cache simulation
     def run_simulation(self, num_blocks_per_set, num_words_per_block,
@@ -132,10 +150,10 @@ class Simulator(object):
         table_width = max((shutil.get_terminal_size(
             (DEFAULT_TABLE_WIDTH, None)).columns, DEFAULT_TABLE_WIDTH))
 
-        print()
+        # print()
         self.display_addr_refs(refs, table_width)
-        print()
-        self.display_cache(cache, table_width)
-        print()
+        # print()
+        # self.display_cache(cache, table_width)
+        # print()
         self.display_hit_miss(refs)
-        print()
+        # print()
